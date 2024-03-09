@@ -27,6 +27,10 @@
 #define ZE_SFT   LSFT_T(KC_0)
 #define SL_SFT   RSFT_T(KC_SLSH)
 #define RETSPR   LGUI_T(KC_ENT)
+#define M_LEFT   LALT(KC_LEFT)
+#define M_DOWN   LALT(KC_DOWN)
+#define M_UP     LALT(KC_UP)
+#define M_RIGHT  LALT(KC_RIGHT)
 
 /// Tap dance declarations
 
@@ -136,7 +140,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
      .-----.-----.-----.-----.-----.           .-----.-----.-----.-----.-----.
      |     | F7  | F8  | F9  | F10 |           | ACT |C-c ^|     |     |     |
      .-----.-----.-----.-----.-----.           .-----.-----.-----.-----.-----.
-     |     | F4  | F5  | F6  | F11 |           |     |     |     |     |     |
+     |     | F4  | F5  | F6  | F11 |           | M-L | M-D | M-U | M-R |     |
      .-----.-----.-----.-----.-----.-----.-----.-----.-----.-----.-----.-----.
      |     | F1  | F2  | F3  | F12 |     |     |     |     |     |     |     |
      .-----.-----.-----.-----.-----.-----.-----.-----.-----.-----.-----.-----.
@@ -145,7 +149,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   */
   [_ADJUST] = LAYOUT(
     _______, KC_F7,   KC_F8,   KC_F9,   KC_F10,                    AC_TOGG, Cc_UP,   _______, _______, _______,
-    _______, KC_F4,   KC_F5,   KC_F6,   KC_F11,                    _______, _______, _______, _______, _______,
+    _______, KC_F4,   KC_F5,   KC_F6,   KC_F11,                    M_LEFT,  M_DOWN,  M_UP,    M_RIGHT, _______,
     _______, KC_F1,   KC_F2,   KC_F3,   KC_F12,  _______, _______, _______, _______, _______, _______, _______,
     _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______)
 };
