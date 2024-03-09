@@ -54,6 +54,8 @@ enum tap_dances {
 enum custom_keycodes {
   // ->              <-    =<<   >>=   <*>  <*    *>    <$>   <&>   <|>   =>     ::
   RARR = SAFE_RANGE, LARR, LBND, RBND, APP, RAPP, LAPP, FMAP, PAMF, AALT, IMPLS, DCOL,
+  // smerge-mode: C-c ^
+  Cc_UP
 };
 
 /// Key overrides
@@ -174,11 +176,16 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     if (record->event.pressed) SEND_STRING("=>");  break;
   case DCOL:
     if (record->event.pressed) SEND_STRING("::");  break;
+  case Cc_UP:
+    if (record->event.pressed) {
+      SEND_STRING(SS_LCTL("c") "^");
+    };
+    break;
   }
   return true;
 };
 
-//// Tap dance definitions
+/// Tap dance definitions
 
 // Heavily inspired by:
 //
