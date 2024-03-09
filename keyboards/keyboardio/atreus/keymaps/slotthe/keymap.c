@@ -42,12 +42,14 @@ enum tap_dances {
   CTL_PR,  // ( ) lctl
   SFT_CI,  // ^ ^ lsft  (working around LSFT_T not being able to output shifted keys)
   SFT_EX,  // ! ! lsft  (ditto)
+  L1_CLY,  // { } lower
 };
 
 #define CTLPAR TD(CTL_PR)
 #define ALTBRC TD(ALT_BR)
 #define SFTCRC TD(SFT_CI)
 #define SFTEXL TD(SFT_EX)
+#define L1CLYB TD(L1_CLY)
 
 /// Macro declarations
 
@@ -87,14 +89,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
      .-----.-----.-----.-----.-----.-----.-----.-----.-----.-----.-----.-----.
      | S+Z |  X  |  C  |  D  |  V  | ARP | REP |  K  |  H  |  ,  |  .  | S+/ |
      .-----.-----.-----.-----.-----.-----.-----.-----.-----.-----.-----.-----.
-     | ESC | TAB | SPR | L1  | SPC | A[] | BSC | C() | L2  |  -  |  '  | RET |
+     | ESC | TAB | SPR | L{} | SPC | A[] | BSC | C() | L2  |  -  |  '  | RET |
      .-----.-----.-----.-----.-----.-----.-----.-----.-----.-----.-----.-----.
   */
   [_COLEMAK_DH] = LAYOUT(
     KC_Q,    KC_W,    KC_F,    KC_P,    KC_B,                      KC_J,    KC_L,    KC_U,    KC_Y,    LSPR_SC,
     KC_A,    KC_R,    KC_S,    KC_T,    KC_G,                      KC_M,    KC_N,    KC_E,    KC_I,    KC_O,
     Z_SFT,   KC_X,    KC_C,    KC_D,    KC_V,    QK_AREP, QK_REP,  KC_K,    KC_H,    KC_COMM, D_RAISE, SL_SFT,
-    KC_ESC,  KC_TAB,  KC_LGUI, LOWER,   KC_SPC,  ALTBRC,  KC_BSPC, CTLPAR,  RAISE,   KC_MINS, KC_QUOT, KC_ENT),
+    KC_ESC,  KC_TAB,  KC_LGUI, L1CLYB,  KC_SPC,  ALTBRC,  KC_BSPC, CTLPAR,  RAISE,   KC_MINS, KC_QUOT, KC_ENT),
 
   /* Layer 1 (LOWER)
      .-----.-----.-----.-----.-----.           .-----.-----.-----.-----.-------.
@@ -325,6 +327,33 @@ void lsft_ex_reset(tap_dance_state_t *state, void *user_data) {
   lsft_ex_state.state = TD_NONE;
 }
 
+//// L1_CLY
+
+static td_tap_t l1_clyb_state = {
+  .is_press_action = true,
+  .state = TD_NONE
+};
+
+void l1_clyb_finished(tap_dance_state_t *state, void *user_data) {
+  l1_clyb_state.state = cur_dance(state);
+  switch (l1_clyb_state.state) {
+  case TD_SINGLE_TAP:  register_code16(KC_LCBR); break;
+  case TD_SINGLE_HOLD: layer_on(_LOWER);         break;
+  case TD_DOUBLE_TAP:  register_code16(KC_RCBR); break;
+  default:             break;
+  }
+}
+
+void l1_clyb_reset(tap_dance_state_t *state, void *user_data) {
+  switch (l1_clyb_state.state) {
+  case TD_SINGLE_TAP:  unregister_code16(KC_LCBR); break;
+  case TD_SINGLE_HOLD: layer_off(_LOWER);          break;
+  case TD_DOUBLE_TAP:  unregister_code16(KC_RCBR); break;
+  default:             break;
+  }
+  l1_clyb_state.state = TD_NONE;
+}
+
 //// Actually define the tap-dance actions
 
 tap_dance_action_t tap_dance_actions[] = {
@@ -332,4 +361,5 @@ tap_dance_action_t tap_dance_actions[] = {
   [CTL_PR] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, lctl_pr_finished, lctl_pr_reset),
   [SFT_CI] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, lsft_ci_finished, lsft_ci_reset),
   [SFT_EX] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, lsft_ex_finished, lsft_ex_reset),
+  [L1_CLY] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, l1_clyb_finished, l1_clyb_reset),
 };
