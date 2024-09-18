@@ -26,11 +26,12 @@
 #define Z_SFT    LSFT_T(KC_Z)
 #define ZE_SFT   LSFT_T(KC_0)
 #define SL_SFT   RSFT_T(KC_SLSH)
-#define RETSPR   LGUI_T(KC_ENT)
 #define M_LEFT   LALT(KC_LEFT)
 #define M_DOWN   LALT(KC_DOWN)
 #define M_UP     LALT(KC_UP)
 #define M_RIGHT  LALT(KC_RIGHT)
+#define CTL_BSPC LCTL(KC_BSPC)
+#define M_SPC    LALT(KC_SPC)
 
 /// Tap dance declarations
 
@@ -104,20 +105,20 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
   /* Layer 1 (LOWER)
      .-----.-----.-----.-----.-----.           .-----.-----.-----.-----.-------.
-     |  &  | *>  | >>= | <&> |     |           |  =  |  +  |  *  |  -  | RET+M |
+     |  &  | *>  | >>= | <&> |     |           | <-  |  +  |     |  -  | M+SPC |
      .-----.-----.-----.-----.-----.           .-----.-----.-----.-----.-------.
-     | ::  | =>  | =<< | <|> |  @  |           | LFT | DWN | UP  | RGT |   \   |
+     | ::  | =>  | =<< | <|> |  @  |           |  ←  |  ↓  |  ↑  |  →  |   \   |
      .-----.-----.-----.-----.-----.-----.-----.-----.-----.-----.-----.-------.
-     | !+S | <*  | <*> | <$> | <-  |     | MEN |  -> |  $  |  #  |  %  |  ^+S  |
+     | !+S | <*  | <*> | <$> |     |     | MEN |  -> |  $  |  #  |  %  |  ^+S  |
      .-----.-----.-----.-----.-----.-----.-----.-----.-----.-----.-----.-------.
-     |     |     |     |     |     |     |     |     | L3  | ALT |     |  S-I  |
+     |     |     |     |     |     |     |     | C-B | L3  | ALT |     |  S-I  |
      .-----.-----.-----.-----.-----.-----.-----.-----.-----.-----.-----.-------.
   */
   [_LOWER] = LAYOUT(
-    KC_AMPR, RAPP,    RBND,    PAMF,    _______,                   KC_EQL,  KC_PLUS, KC_ASTR, KC_MINS, RETSPR,
-    DCOL,    IMPLS,   LBND,    AALT,    KC_AT,                     KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, KC_BSLS,
-    SFTEXL,  LAPP,    APP,     FMAP,    LARR,    _______, KC_APP,  RARR,    KC_DLR,  KC_HASH, KC_PERC, SFTCRC,
-    _______, _______, _______, _______, _______, _______, _______, _______, ADJUST,  KC_LALT, _______, LSFT_INS),
+    KC_AMPR, RAPP,    RBND,    PAMF,    _______,                    LARR,    KC_PLUS, _______, KC_MINS, M_SPC,
+    DCOL,    IMPLS,   LBND,    AALT,    KC_AT,                      KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, KC_BSLS,
+    SFTEXL,  LAPP,    APP,     FMAP,    _______, _______, KC_APP,   RARR,    KC_DLR,  KC_HASH, KC_PERC, SFTCRC,
+    _______, _______, _______, _______, _______, _______, CTL_BSPC, _______, ADJUST,  KC_LALT, _______, LSFT_INS),
 
   /* Layer 2 (RAISE)
      .-----.-----.-----.-----.-----.           .-----.-----.-----.-----.-----.
@@ -125,7 +126,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
      .-----.-----.-----.-----.-----.           .-----.-----.-----.-----.-----.
      |  :  |  4  |  5  |  6  |  =  |           |  &  |  `  |  _  |  '  |  "  |
      .-----.-----.-----.-----.-----.-----.-----.-----.-----.-----.-----.-----.
-     | 0+S |  1  |  2  |  3  |  $  |     |     |     |  !  |  #  |  %  | ^+S |
+     | 0+S |  1  |  2  |  3  |  $  |     |     |     |  !  |  ,  |  .  | ^+S |
      .-----.-----.-----.-----.-----.-----.-----.-----.-----.-----.-----.-----.
      |     |     |     | L3  |     |     |     |     |     |     |     |     |
      .-----.-----.-----.-----.-----.-----.-----.-----.-----.-----.-----.-----.
@@ -133,7 +134,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [_RAISE] = LAYOUT(
     KC_PERC, KC_7,    KC_8,    KC_9,    _______,                   _______, KC_PLUS, KC_ASTR, KC_MINS, _______,
     KC_COLN, KC_4,    KC_5,    KC_6,    KC_EQL,                    KC_AMPR, KC_GRV,  KC_UNDS, KC_QUOT, KC_DQT,
-    ZE_SFT,  KC_1,    KC_2,    KC_3,    KC_DLR,  _______, _______, _______, KC_EXLM, KC_HASH, KC_DOT,  SFTCRC,
+    ZE_SFT,  KC_1,    KC_2,    KC_3,    KC_DLR,  _______, _______, _______, KC_EXLM, KC_COMM, KC_DOT,  SFTCRC,
     _______, _______, _______, ADJUST,  _______, _______, _______, _______, _______, _______, _______, _______),
 
   /* Layer 3 (ADJUST)
