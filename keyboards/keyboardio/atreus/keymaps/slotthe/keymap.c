@@ -67,13 +67,12 @@ enum custom_keycodes {
 
 /// Key overrides
 
-const key_override_t **key_overrides = (const key_override_t *[]){
+const key_override_t *key_overrides[] = {
   &ko_make_basic(MOD_MASK_SHIFT, KC_BSPC, KC_DEL), // S-BSP ≡ DEL
   // Emacs got me used to these, so let's convince other programs that
   // we are in fact sending the correct keys.
   &ko_make_basic(MOD_MASK_CTRL, KC_I, KC_TAB),     // C-i ≡ Tab
   &ko_make_basic(MOD_MASK_CTRL, KC_M, KC_ENT),     // C-m ≡ Return
-  NULL // Null terminate the array of overrides
 };
 
 /// Layers
