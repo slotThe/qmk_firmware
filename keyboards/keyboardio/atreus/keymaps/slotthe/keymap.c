@@ -159,29 +159,41 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   switch (keycode) {
   case RARR:
-    if (record->event.pressed) SEND_STRING("->");  break;
+    if (record->event.pressed) SEND_STRING("->");
+    break;
   case LARR:
-    if (record->event.pressed) SEND_STRING("<-");  break;
+    if (record->event.pressed) SEND_STRING("<-");
+    break;
   case LBND:
-    if (record->event.pressed) SEND_STRING("=<<"); break;
+    if (record->event.pressed) SEND_STRING("=<<");
+    break;
   case RBND:
-    if (record->event.pressed) SEND_STRING(">>="); break;
+    if (record->event.pressed) SEND_STRING(">>=");
+    break;
   case APP:
-    if (record->event.pressed) SEND_STRING("<*>"); break;
+    if (record->event.pressed) SEND_STRING("<*>");
+    break;
   case RAPP:
-    if (record->event.pressed) SEND_STRING("*>");  break;
+    if (record->event.pressed) SEND_STRING("*>");
+    break;
   case LAPP:
-    if (record->event.pressed) SEND_STRING("<*");  break;
+    if (record->event.pressed) SEND_STRING("<*");
+    break;
   case FMAP:
-    if (record->event.pressed) SEND_STRING("<$>"); break;
+    if (record->event.pressed) SEND_STRING("<$>");
+    break;
   case PAMF:
-    if (record->event.pressed) SEND_STRING("<&>"); break;
+    if (record->event.pressed) SEND_STRING("<&>");
+    break;
   case AALT:
-    if (record->event.pressed) SEND_STRING("<|>"); break;
+    if (record->event.pressed) SEND_STRING("<|>");
+    break;
   case IMPLS:
-    if (record->event.pressed) SEND_STRING("=>");  break;
+    if (record->event.pressed) SEND_STRING("=>");
+    break;
   case DCOL:
-    if (record->event.pressed) SEND_STRING("::");  break;
+    if (record->event.pressed) SEND_STRING("::");
+    break;
   case Cc_UP:
     if (record->event.pressed) {
       SEND_STRING(SS_LCTL("c") "^");
