@@ -17,14 +17,8 @@
 
 // NOTE: `M-x occur RET /// RET' gives a good overview.
 
-#define _I(p,n)    if(p){n;}else     // if-then-else
-#define _C(x,a...) case x:{a;}break;
-#define CMPS(l,u)  _I(record->event.pressed,                            \
-                      _I(keyboard_report->mods & (MOD_BIT(KC_LSFT)),    \
-                         SEND_STRING(SS_TAP(X_APP) u))                  \
-                      SEND_STRING(SS_TAP(X_APP) l))
-
-/// General macros
+#define _I(p,n)     if(p){n;}else
+#define _C(x,a...)  case x:{a;}break;
 
 #define LSPR_SC  LGUI_T(KC_SCLN)
 #define LALT_BR  LALT_T(KC_LBRC)
@@ -161,55 +155,22 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     AEH    , OEH  ,   UEH  ,   _______, SZ    , _______, _______, _______, _______, _______, _______, _______)
 };
 
-/// Macro definitions
+/// Macros
+
+#define _IP(a)     _I(record->event.pressed, a);
+#define _IPS(a)    _IP(SEND_STRING(a));
+#define _CMPS(l,u) _IP(_I(keyboard_report->mods & (MOD_BIT(KC_LSFT)),   \
+                         SEND_STRING(SS_TAP(X_APP) u))                  \
+                       SEND_STRING(SS_TAP(X_APP) l))   // else
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   switch (keycode) {
-  case RARR:
-    if (record->event.pressed) SEND_STRING("->");
-    break;
-  case LARR:
-    if (record->event.pressed) SEND_STRING("<-");
-    break;
-  case LBND:
-    if (record->event.pressed) SEND_STRING("=<<");
-    break;
-  case RBND:
-    if (record->event.pressed) SEND_STRING(">>=");
-    break;
-  case APP:
-    if (record->event.pressed) SEND_STRING("<*>");
-    break;
-  case RAPP:
-    if (record->event.pressed) SEND_STRING("*>");
-    break;
-  case LAPP:
-    if (record->event.pressed) SEND_STRING("<*");
-    break;
-  case FMAP:
-    if (record->event.pressed) SEND_STRING("<$>");
-    break;
-  case PAMF:
-    if (record->event.pressed) SEND_STRING("<&>");
-    break;
-  case AALT:
-    if (record->event.pressed) SEND_STRING("<|>");
-    break;
-  case IMPLS:
-    if (record->event.pressed) SEND_STRING("=>");
-    break;
-  case DCOL:
-    if (record->event.pressed) SEND_STRING("::");
-    break;
-  case Cc_UP:
-    if (record->event.pressed) {
-      SEND_STRING(SS_LCTL("c") "^");
-    };
-    break;
-  _C(AEH, CMPS("\"a", "\"A"));
-  _C(OEH, CMPS("\"o", "\"O"));
-  _C(UEH, CMPS("\"u", "\"U"));
-  _C(SZ , CMPS("ss" , "SS" ));
+  _C(RARR, _IPS("->"))         ; _C(LARR , _IPS("<-"))            ; _C(LBND, _IPS("=<<"));
+  _C(RBND, _IPS(">>="))        ; _C(APP  , _IPS("<*>"))           ; _C(RAPP, _IPS("*>"));
+  _C(LAPP, _IPS("<*"))         ; _C(FMAP , _IPS("<$>"))           ; _C(PAMF, _IPS("<&>"));
+  _C(AALT, _IPS("<|>"))        ; _C(IMPLS, _IPS("=>"))            ; _C(DCOL, _IPS("::"));
+  _C(AEH , _CMPS("\"a", "\"A")); _C(OEH  , _CMPS("\"o", "\"O"))   ; _C(UEH , _CMPS("\"u", "\"U"));
+  _C(SZ  , _CMPS("ss" , "SS" )); _C(Cc_UP, _IPS(SS_LCTL("c") "^"));
   }
   return true;
 };
@@ -220,24 +181,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 //
 //     https://docs.qmk.fm/?ref=blog.splitkb.com#/feature_tap_dance?id=example-4
 
-typedef enum {
-  TD_NONE,
-  TD_UNKNOWN,
-  TD_SINGLE_TAP,
-  TD_SINGLE_HOLD,
-  TD_DOUBLE_TAP,
-} td_state_t;
-
-typedef struct {
-  bool is_press_action;
-  td_state_t state;
-} td_tap_t;
+typedef enum { TD_NONE, TD_UNKNOWN, TD_SINGLE_TAP, TD_SINGLE_HOLD, TD_DOUBLE_TAP, } td_state_t;
 
 // Return an integer that corresponds to what kind of tap dance should
 // be executed.
-//
-// Interrupted: If the state of a dance is "interrupted", that means
-//  that another key has been hit under the tapping term.
 //
 // Pressed: Whether or not the key is still being pressed. If this value
 //  is true, that means the tapping term has ended, but the key is still
@@ -250,138 +197,43 @@ td_state_t cur_dance(tap_dance_state_t *state) {
   else                          return TD_UNKNOWN;
 }
 
-//// ALT_BR
+#define   _R0(x) {}                           // Ignore
+#define   _R1(x) register_code(x)
+#define   _Rl(x) layer_on(x)
+#define  _R16(x) register_code16(x)
+#define _RC(n,x) _R##n(x)
+#define   _U0(x) {}                           // Ignore
+#define   _U1(x) unregister_code(x)
+#define   _Ul(x) layer_off(x)
+#define  _U16(x) unregister_code16(x)
+#define _UC(n,x) _U##n(x)
 
-static td_tap_t alt_br_state = {
-  .is_press_action = true,
-  .state = TD_NONE
-};
-
-void lalt_br_finished(tap_dance_state_t *state, void *user_data) {
-  alt_br_state.state = cur_dance(state);
-  switch (alt_br_state.state) {
-  case TD_SINGLE_TAP:  register_code(KC_LBRC); break;
-  case TD_SINGLE_HOLD: register_code(KC_LALT); break;
-  case TD_DOUBLE_TAP:  register_code(KC_RBRC); break;
-  default:             break;
+#define DEFTAP(name,n,st,m,sh,k,dt)                                     \
+  static td_state_t name##_state = TD_NONE;                             \
+  void name##_finished(tap_dance_state_t *state, void *user_data) {     \
+    name##_state = cur_dance(state);                                    \
+    switch (name##_state) {                                             \
+    _C(TD_SINGLE_TAP , _RC(n,st));                                      \
+    _C(TD_SINGLE_HOLD, _RC(m,sh));                                      \
+    _C(TD_DOUBLE_TAP , _RC(k,dt));                                      \
+    default: break;                                                     \
+    }                                                                   \
+  }                                                                     \
+  void name##_reset(tap_dance_state_t *state, void *user_data) {        \
+    switch (name##_state) {                                             \
+    _C(TD_SINGLE_TAP , _UC(n,st));                                      \
+    _C(TD_SINGLE_HOLD, _UC(m,sh));                                      \
+    _C(TD_DOUBLE_TAP , _UC(k,dt));                                      \
+    default: break;                                                     \
+    }                                                                   \
+    name##_state = TD_NONE;                                             \
   }
-}
 
-void lalt_br_reset(tap_dance_state_t *state, void *user_data) {
-  switch (alt_br_state.state) {
-  case TD_SINGLE_TAP:  unregister_code(KC_LBRC); break;
-  case TD_SINGLE_HOLD: unregister_code(KC_LALT); break;
-  case TD_DOUBLE_TAP:  unregister_code(KC_RBRC); break;
-  default:             break;
-  }
-  alt_br_state.state = TD_NONE;
-}
-
-//// LCTL_PR
-
-static td_tap_t lctl_pr_state = {
-  .is_press_action = true,
-  .state = TD_NONE
-};
-
-void lctl_pr_finished(tap_dance_state_t *state, void *user_data) {
-  lctl_pr_state.state = cur_dance(state);
-  switch (lctl_pr_state.state) {
-  case TD_SINGLE_TAP:  register_code16(KC_LPRN); break;
-  case TD_SINGLE_HOLD: register_code(KC_LCTL);   break;
-  case TD_DOUBLE_TAP:  register_code16(KC_RPRN); break;
-  default:             break;
-  }
-}
-
-void lctl_pr_reset(tap_dance_state_t *state, void *user_data) {
-  switch (lctl_pr_state.state) {
-  case TD_SINGLE_TAP:  unregister_code16(KC_LPRN); break;
-  case TD_SINGLE_HOLD: unregister_code(KC_LCTL);   break;
-  case TD_DOUBLE_TAP:  unregister_code16(KC_RPRN); break;
-  default:             break;
-  }
-  lctl_pr_state.state = TD_NONE;
-}
-
-//// SFT_CI
-
-static td_tap_t lsft_ci_state = {
-  .is_press_action = true,
-  .state = TD_NONE
-};
-
-void lsft_ci_finished(tap_dance_state_t *state, void *user_data) {
-  lsft_ci_state.state = cur_dance(state);
-  switch (lsft_ci_state.state) {
-  case TD_SINGLE_TAP:  register_code16(KC_CIRC); break;
-  case TD_SINGLE_HOLD: register_code(KC_LSFT);   break;
-  default:             break;
-  }
-}
-
-void lsft_ci_reset(tap_dance_state_t *state, void *user_data) {
-  switch (lsft_ci_state.state) {
-  case TD_SINGLE_TAP:  unregister_code16(KC_CIRC); break;
-  case TD_SINGLE_HOLD: unregister_code(KC_LSFT);   break;
-  default:             break;
-  }
-  lsft_ci_state.state = TD_NONE;
-}
-
-//// SFT_EX
-
-static td_tap_t lsft_ex_state = {
-  .is_press_action = true,
-  .state = TD_NONE
-};
-
-void lsft_ex_finished(tap_dance_state_t *state, void *user_data) {
-  lsft_ex_state.state = cur_dance(state);
-  switch (lsft_ex_state.state) {
-  case TD_SINGLE_TAP:  register_code16(KC_EXLM); break;
-  case TD_SINGLE_HOLD: register_code(KC_LSFT);   break;
-  default:             break;
-  }
-}
-
-void lsft_ex_reset(tap_dance_state_t *state, void *user_data) {
-  switch (lsft_ex_state.state) {
-  case TD_SINGLE_TAP:  unregister_code16(KC_EXLM); break;
-  case TD_SINGLE_HOLD: unregister_code(KC_LSFT);   break;
-  default:             break;
-  }
-  lsft_ex_state.state = TD_NONE;
-}
-
-//// L1_CLY
-
-static td_tap_t l1_clyb_state = {
-  .is_press_action = true,
-  .state = TD_NONE
-};
-
-void l1_clyb_finished(tap_dance_state_t *state, void *user_data) {
-  l1_clyb_state.state = cur_dance(state);
-  switch (l1_clyb_state.state) {
-  case TD_SINGLE_TAP:  register_code16(KC_LCBR); break;
-  case TD_SINGLE_HOLD: layer_on(_LOWER);         break;
-  case TD_DOUBLE_TAP:  register_code16(KC_RCBR); break;
-  default:             break;
-  }
-}
-
-void l1_clyb_reset(tap_dance_state_t *state, void *user_data) {
-  switch (l1_clyb_state.state) {
-  case TD_SINGLE_TAP:  unregister_code16(KC_LCBR); break;
-  case TD_SINGLE_HOLD: layer_off(_LOWER);          break;
-  case TD_DOUBLE_TAP:  unregister_code16(KC_RCBR); break;
-  default:             break;
-  }
-  l1_clyb_state.state = TD_NONE;
-}
-
-//// Actually define the tap-dance actions
+DEFTAP(lalt_br,  1,KC_LBRC, 1,KC_LALT,  1,KC_RBRC)
+DEFTAP(lctl_pr, 16,KC_LPRN, 1,KC_LCTL, 16,KC_RPRN)
+DEFTAP(lsft_ci, 16,KC_CIRC, 1,KC_LSFT,  0,NULL)
+DEFTAP(lsft_ex, 16,KC_EXLM, 1,KC_LSFT,  0,NULL)
+DEFTAP(l1_clyb, 16,KC_LCBR, l,_LOWER , 16,KC_RCBR)
 
 tap_dance_action_t tap_dance_actions[] = {
   [ALT_BR] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, lalt_br_finished, lalt_br_reset),
