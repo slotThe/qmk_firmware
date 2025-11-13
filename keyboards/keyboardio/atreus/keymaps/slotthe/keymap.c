@@ -17,6 +17,13 @@
 
 // NOTE: `M-x occur RET /// RET' gives a good overview.
 
+#define _I(p,n)    if(p){n;}else     // if-then-else
+#define _C(x,a...) case x:{a;}break;
+#define CMPS(l,u)  _I(record->event.pressed,                            \
+                      _I(keyboard_report->mods & (MOD_BIT(KC_LSFT)),    \
+                         SEND_STRING(SS_TAP(X_APP) u))                  \
+                      SEND_STRING(SS_TAP(X_APP) l))
+
 /// General macros
 
 #define LSPR_SC  LGUI_T(KC_SCLN)
@@ -61,8 +68,8 @@ enum tap_dances {
 enum custom_keycodes {
   // ->              <-    =<<   >>=   <*>  <*    *>    <$>   <&>   <|>   =>     ::
   RARR = SAFE_RANGE, LARR, LBND, RBND, APP, RAPP, LAPP, FMAP, PAMF, AALT, IMPLS, DCOL,
-  // smerge-mode: C-c ^
-  Cc_UP
+  // smerge-mode: C-c ^   ä    ö    ü    ß
+  Cc_UP,                  AEH, OEH, UEH, SZ
 };
 
 /// Key overrides
@@ -144,14 +151,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
      .-----.-----.-----.-----.-----.-----.-----.-----.-----.-----.-----.-----.
      | VDN | F1  | F2  | F3  | F12 |     |     |     |     |     |     |     |
      .-----.-----.-----.-----.-----.-----.-----.-----.-----.-----.-----.-----.
-     |     |     |     |     |     |     |     |     |     |     |     |     |
+     | ä/Ä | ö/Ö | ü/Ü |     | ß/ẞ |     |     |     |     |     |     |     |
      .-----.-----.-----.-----.-----.-----.-----.-----.-----.-----.-----.-----.
   */
   [_ADJUST] = LAYOUT(
     KC_MUTE, KC_F7,   KC_F8,   KC_F9,   KC_F10,                    AC_TOGG, Cc_UP,   _______, _______, _______,
     KC_VOLU, KC_F4,   KC_F5,   KC_F6,   KC_F11,                    M_LEFT,  M_DOWN,  M_UP,    M_RIGHT, KC_PGUP,
     KC_VOLD, KC_F1,   KC_F2,   KC_F3,   KC_F12,  _______, _______, _______, _______, _______, _______, KC_PGDN,
-    _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______)
+    AEH    , OEH  ,   UEH  ,   _______, SZ    , _______, _______, _______, _______, _______, _______, _______)
 };
 
 /// Macro definitions
@@ -199,6 +206,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       SEND_STRING(SS_LCTL("c") "^");
     };
     break;
+  _C(AEH, CMPS("\"a", "\"A"));
+  _C(OEH, CMPS("\"o", "\"O"));
+  _C(UEH, CMPS("\"u", "\"U"));
+  _C(SZ , CMPS("ss" , "SS" ));
   }
   return true;
 };
