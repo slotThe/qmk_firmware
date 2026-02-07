@@ -15,11 +15,6 @@
  */
 #include QMK_KEYBOARD_H
 
-// NOTE: `M-x occur RET /// RET' gives a good overview.
-
-#define _I(p,n)     if(p){n;}else
-#define _C(x,a...)  case x:{a;}break;
-
 #define LSPR_SC  LGUI_T(KC_SCLN)
 #define LALT_BR  LALT_T(KC_LBRC)
 #define LSFT_INS LSFT(KC_INS)
@@ -157,10 +152,12 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 /// Macros
 
-#define _IP(a)     _I(record->event.pressed, a);
-#define _IPS(a)    _IP(SEND_STRING(a));
-#define _CMPS(l,u) _IP(_I(keyboard_report->mods & (MOD_BIT(KC_LSFT)),   \
-                         SEND_STRING(SS_TAP(X_APP) u))                  \
+#define _I(p,n)     if(p){n;}else                // if-then-else
+#define _C(x,a...)  case x:{a;}break;            // case
+#define _IP(a)     _I(record->event.pressed, a); // if pressed
+#define _IPS(a)    _IP(SEND_STRING(a));          // if pressed then send
+#define _CMPS(l,u) _IP(_I(keyboard_report->mods & MOD_BIT(KC_LSFT), \
+                         SEND_STRING(SS_TAP(X_APP) u))              \
                        SEND_STRING(SS_TAP(X_APP) l))   // else
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
