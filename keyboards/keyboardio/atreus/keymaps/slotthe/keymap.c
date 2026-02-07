@@ -1,4 +1,4 @@
-/* © 2023–2025  Tony Zorman <mail@tony-zorman.com> (@slotThe)
+/* © 2023–2026  Tony Zorman <mail@tony-zorman.com> (@slotThe)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,6 +44,7 @@ enum tap_dances {
   SFT_CI,  // ^ ^ lsft  (working around LSFT_T not being able to output shifted keys)
   SFT_EX,  // ! ! lsft  (ditto)
   L1_CLY,  // { } lower
+  TD_DCK,
 };
 
 #define CTLPAR TD(CTL_PR)
@@ -51,6 +52,7 @@ enum tap_dances {
 #define SFTCRC TD(SFT_CI)
 #define SFTEXL TD(SFT_EX)
 #define L1CLYB TD(L1_CLY)
+#define DUCK   TD(TD_DCK)
 
 /// Macro declarations
 
@@ -95,7 +97,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [_COLEMAK_DH] = LAYOUT(
     KC_Q,    KC_W,    KC_F,    KC_P,    KC_B,                      KC_J,    KC_L,    KC_U,    KC_Y,    LSPR_SC,
     KC_A,    KC_R,    KC_S,    KC_T,    KC_G,                      KC_M,    KC_N,    KC_E,    KC_I,    KC_O,
-    Z_SFT,   KC_X,    KC_C,    KC_D,    KC_V,    QK_AREP, QK_REP,  KC_K,    KC_H,    KC_COMM, D_RAISE, SL_SFT,
+    Z_SFT,   KC_X,    KC_C,    KC_D,    KC_V,    DUCK,    QK_REP,  KC_K,    KC_H,    KC_COMM, D_RAISE, SL_SFT,
     KC_ESC,  KC_TAB,  KC_LGUI, L1CLYB,  KC_SPC,  ALTBRC,  KC_BSPC, CTLPAR,  RAISE,   KC_MINS, KC_QUOT, KC_ENT),
 
   /* Layer 1 (LOWER)
@@ -194,14 +196,24 @@ td_state_t cur_dance(tap_dance_state_t *state) {
   else                          return TD_UNKNOWN;
 }
 
+#define DuckMods(n)                                                                        \
+    register_mods(MOD_BIT(KC_LGUI) | MOD_BIT(KC_LCTL) | MOD_BIT(KC_LSFT)); tap_code(KC_V); \
+  unregister_mods(MOD_BIT(KC_LGUI) | MOD_BIT(KC_LCTL) | MOD_BIT(KC_LSFT)); tap_code(n);
+
 #define   _R0(x) {}                           // Ignore
 #define   _R1(x) register_code(x)
 #define   _Rl(x) layer_on(x)
 #define  _R16(x) register_code16(x)
+#define  _Rd1(x) DuckMods(KC_1)
+#define  _Rd2(x) DuckMods(KC_2)
+#define  _Rd3(x) DuckMods(KC_3)
 #define _RC(n,x) _R##n(x)
 #define   _U0(x) {}                           // Ignore
 #define   _U1(x) unregister_code(x)
 #define   _Ul(x) layer_off(x)
+#define  _Ud1(x) {}
+#define  _Ud2(x) {}
+#define  _Ud3(x) {}
 #define  _U16(x) unregister_code16(x)
 #define _UC(n,x) _U##n(x)
 
@@ -231,6 +243,7 @@ DEFTAP(lctl_pr, 16,KC_LPRN, 1,KC_LCTL, 16,KC_RPRN)
 DEFTAP(lsft_ci, 16,KC_CIRC, 1,KC_LSFT,  0,NULL)
 DEFTAP(lsft_ex, 16,KC_EXLM, 1,KC_LSFT,  0,NULL)
 DEFTAP(l1_clyb, 16,KC_LCBR, l,_LOWER , 16,KC_RCBR)
+DEFTAP(duck,    d1,{}     , d2,{}    , d3,{})
 
 tap_dance_action_t tap_dance_actions[] = {
   [ALT_BR] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, lalt_br_finished, lalt_br_reset),
@@ -238,4 +251,5 @@ tap_dance_action_t tap_dance_actions[] = {
   [SFT_CI] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, lsft_ci_finished, lsft_ci_reset),
   [SFT_EX] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, lsft_ex_finished, lsft_ex_reset),
   [L1_CLY] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, l1_clyb_finished, l1_clyb_reset),
+  [TD_DCK] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, duck_finished   , duck_reset   ),
 };
