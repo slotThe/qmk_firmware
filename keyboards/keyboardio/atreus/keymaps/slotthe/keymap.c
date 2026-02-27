@@ -196,9 +196,9 @@ td_state_t cur_dance(tap_dance_state_t *state) {
   else                          return TD_UNKNOWN;
 }
 
-#define DuckMods(n)                                                                        \
-    register_mods(MOD_BIT(KC_LGUI) | MOD_BIT(KC_LCTL) | MOD_BIT(KC_LSFT)); tap_code(KC_V); \
-  unregister_mods(MOD_BIT(KC_LGUI) | MOD_BIT(KC_LCTL) | MOD_BIT(KC_LSFT)); tap_code(n);
+#define DuckMods(n)                                                                                     \
+    register_mods(MOD_BIT(KC_LGUI) | MOD_BIT(KC_LCTL) | MOD_BIT(KC_LSFT)); tap_code(KC_V); tap_code(n); \
+  unregister_mods(MOD_BIT(KC_LGUI) | MOD_BIT(KC_LCTL) | MOD_BIT(KC_LSFT));
 
 #define   _R0(x) {}                           // Ignore
 #define   _R1(x) register_code(x)
