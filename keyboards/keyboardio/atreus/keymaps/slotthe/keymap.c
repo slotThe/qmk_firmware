@@ -15,43 +15,35 @@
  */
 #include QMK_KEYBOARD_H
 
-#define LSPR_SC  LGUI_T(KC_SCLN)
-#define LALT_BR  LALT_T(KC_LBRC)
-#define LSFT_INS LSFT(KC_INS)
-#define OSMSFT   OSM(MOD_LSFT)
-#define Z_SFT    LSFT_T(KC_Z)
-#define ZE_SFT   LSFT_T(KC_0)
-#define SL_SFT   RSFT_T(KC_SLSH)
-#define M_LEFT   LALT(KC_LEFT)
-#define M_DOWN   LALT(KC_DOWN)
-#define M_UP     LALT(KC_UP)
-#define M_RIGHT  LALT(KC_RIGHT)
-#define CTL_BSPC LCTL(KC_BSPC)
-#define M_SPC    LALT(KC_SPC)
+#define M4_SC   LGUI_T(KC_SCLN)
+#define S_INS   LSFT(KC_INS)
+#define S_Z     LSFT_T(KC_Z)
+#define S_0     LSFT_T(KC_0)
+#define S_SLSH  RSFT_T(KC_SLSH)
+#define M_LEFT  LALT(KC_LEFT)
+#define M_DOWN  LALT(KC_DOWN)
+#define M_UP    LALT(KC_UP)
+#define M_RGHT  LALT(KC_RIGHT)
+#define C_BSPC  LCTL(KC_BSPC)
+#define M_SPC   LALT(KC_SPC)
 
 /// Tap dance declarations
 
-// So far, tap dances do different things on
-//
-//   - a single press,
-//   - a double press,
-//   - when held,
-//
-// so expect this many keys as comments.
+// Tap dances do things on a single press, a double press, and when held.
 enum tap_dances {
-  ALT_BR,  // [ ] lalt  (also works shifted, which gets us { and } for free)
-  CTL_PR,  // ( ) lctl
-  SFT_CI,  // ^ ^ lsft  (working around LSFT_T not being able to output shifted keys)
-  SFT_EX,  // ! ! lsft  (ditto)
-  L1_CLY,  // { } lower
-  TD_DCK,
+  TD_ABR,  // [ ] lalt  (also works shifted, which gets us { and } for free)
+  TD_CPR,  // ( ) lctl
+  TD_SCI,  // ^ ^ lsft  (working around LSFT_T not being able to output shifted keys)
+  TD_SEX,  // ! ! lsft  (ditto)
+  TD_L1C,  // { } lower
+  TD_DCK,  // tony-zorman.com/posts/DUCK
 };
 
-#define CTLPAR TD(CTL_PR)
-#define ALTBRC TD(ALT_BR)
-#define SFTCRC TD(SFT_CI)
-#define SFTEXL TD(SFT_EX)
-#define L1CLYB TD(L1_CLY)
+#define C_PRN  TD(TD_CPR)
+#define M_BRC  TD(TD_ABR)
+#define S_CIRC TD(TD_SCI)
+#define S_EXCL TD(TD_SEX)
+#define L1_CLY TD(TD_L1C)
 #define DUCK   TD(TD_DCK)
 
 /// Macro declarations
@@ -59,8 +51,8 @@ enum tap_dances {
 enum custom_keycodes {
   // ->              <-    =<<   >>=   <*>  <*    *>    <$>   <&>   <|>   =>     ::
   RARR = SAFE_RANGE, LARR, LBND, RBND, APP, RAPP, LAPP, FMAP, PAMF, AALT, IMPLS, DCOL,
-  // smerge-mode: C-c ^   ä    ö    ü    ß
-  Cc_UP,                  AEH, OEH, UEH, SZ
+  // smerge-mode: C-c ^   ä  ö  ü  ß
+  Cc_UP,                  ä, ö, ü, ß
 };
 
 /// Key overrides
@@ -80,7 +72,7 @@ enum layer_names { _COLEMAK_DH, _LOWER, _RAISE, _ADJUST };
 #define LOWER    MO(_LOWER)
 #define RAISE    MO(_RAISE)
 #define ADJUST   MO(_ADJUST)
-#define D_RAISE  LT(_RAISE, KC_DOT)
+#define RAISE_D  LT(_RAISE, KC_DOT)
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   /* Colemak base layer
@@ -89,33 +81,33 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
      .-----.-----.-----.-----.-----.           .-----.-----.-----.-----.-----.
      |  A  |  R  |  S  |  T  |  G  |           |  M  |  N  |  E  |  I  |  O  |
      .-----.-----.-----.-----.-----.-----.-----.-----.-----.-----.-----.-----.
-     | S+Z |  X  |  C  |  D  |  V  | ARP | REP |  K  |  H  |  ,  |  .  | S+/ |
+     | S+Z |  X  |  C  |  D  |  V  | DCK | REP |  K  |  H  |  ,  |  .  | S+/ |
      .-----.-----.-----.-----.-----.-----.-----.-----.-----.-----.-----.-----.
      | ESC | TAB | SPR | L{} | SPC | A[] | BSC | C() | L2  |  -  |  '  | RET |
      .-----.-----.-----.-----.-----.-----.-----.-----.-----.-----.-----.-----.
   */
   [_COLEMAK_DH] = LAYOUT(
-    KC_Q,    KC_W,    KC_F,    KC_P,    KC_B,                      KC_J,    KC_L,    KC_U,    KC_Y,    LSPR_SC,
+    KC_Q,    KC_W,    KC_F,    KC_P,    KC_B,                      KC_J,    KC_L,    KC_U,    KC_Y,    M4_SC,
     KC_A,    KC_R,    KC_S,    KC_T,    KC_G,                      KC_M,    KC_N,    KC_E,    KC_I,    KC_O,
-    Z_SFT,   KC_X,    KC_C,    KC_D,    KC_V,    DUCK,    QK_REP,  KC_K,    KC_H,    KC_COMM, D_RAISE, SL_SFT,
-    KC_ESC,  KC_TAB,  KC_LGUI, L1CLYB,  KC_SPC,  ALTBRC,  KC_BSPC, CTLPAR,  RAISE,   KC_MINS, KC_QUOT, KC_ENT),
+    S_Z,     KC_X,    KC_C,    KC_D,    KC_V,    DUCK,    QK_REP,  KC_K,    KC_H,    KC_COMM, RAISE_D, S_SLSH,
+    KC_ESC,  KC_TAB,  KC_LGUI, L1_CLY,  KC_SPC,  M_BRC,  KC_BSPC,  C_PRN,   RAISE,   KC_MINS, KC_QUOT, KC_ENT),
 
   /* Layer 1 (LOWER)
      .-----.-----.-----.-----.-----.           .-----.-----.-----.-----.-------.
-     |  &  | *>  | >>= | <&> |     |           | <-  |  +  |     |  -  | M+SPC |
+     |  &  |     |     |     |     |           | <-  |  +  |     |  -  | M+SPC |
      .-----.-----.-----.-----.-----.           .-----.-----.-----.-----.-------.
-     | ::  | =>  | =<< | <|> |  @  |           |  ←  |  ↓  |  ↑  |  →  |   \   |
+     | ::  |  ^  |     |     |  @  |           |  ←  |  ↓  |  ↑  |  →  |   \   |
      .-----.-----.-----.-----.-----.-----.-----.-----.-----.-----.-----.-------.
-     | !+S | <*  | <*> | <$> |     |     | MEN |  -> |  $  |  #  |  %  |  ^+S  |
+     | !+S |     |     |     |     |     | MEN |  -> |  $  |  #  |  %  |  ^+S  |
      .-----.-----.-----.-----.-----.-----.-----.-----.-----.-----.-----.-------.
      |     |     |     |     |     |     |     | C-B | L3  | ALT |     |  S-I  |
      .-----.-----.-----.-----.-----.-----.-----.-----.-----.-----.-----.-------.
   */
   [_LOWER] = LAYOUT(
-    KC_AMPR, RAPP,    RBND,    PAMF,    _______,                    LARR,    KC_PLUS, _______, KC_MINS, M_SPC,
-    DCOL,    IMPLS,   LBND,    AALT,    KC_AT,                      KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, KC_BSLS,
-    SFTEXL,  LAPP,    APP,     FMAP,    _______, _______, KC_APP,   RARR,    KC_DLR,  KC_HASH, KC_PERC, SFTCRC,
-    _______, _______, _______, _______, _______, _______, CTL_BSPC, _______, ADJUST,  KC_LALT, _______, LSFT_INS),
+    KC_AMPR, _______, _______, _______, _______,                  LARR,    KC_PLUS, _______, KC_MINS, M_SPC,
+    DCOL,    KC_CIRC, _______, _______, KC_AT,                    KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, KC_BSLS,
+    S_EXCL,  _______, _______, _______, _______, _______, KC_APP, RARR,    KC_DLR,  KC_HASH, KC_PERC, S_CIRC,
+    _______, _______, _______, _______, _______, _______, C_BSPC, _______, ADJUST,  KC_LALT, _______, S_INS),
 
   /* Layer 2 (RAISE)
      .-----.-----.-----.-----.-----.           .-----.-----.-----.-----.-----.
@@ -131,7 +123,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [_RAISE] = LAYOUT(
     KC_PERC, KC_7,    KC_8,    KC_9,    _______,                   _______, KC_PLUS, KC_ASTR, KC_MINS, _______,
     KC_COLN, KC_4,    KC_5,    KC_6,    KC_EQL,                    KC_AMPR, KC_GRV,  KC_UNDS, KC_QUOT, KC_DQT,
-    ZE_SFT,  KC_1,    KC_2,    KC_3,    KC_DLR,  _______, _______, _______, KC_EXLM, KC_COMM, KC_DOT,  SFTCRC,
+    S_0,     KC_1,    KC_2,    KC_3,    KC_DLR,  _______, _______, _______, KC_EXLM, KC_COMM, KC_DOT,  S_CIRC,
     _______, _______, _______, ADJUST,  _______, _______, _______, KC_LEFT, _______, KC_DOWN, KC_UP,   KC_RIGHT),
 
   /* Layer 3 (ADJUST)
@@ -147,9 +139,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   */
   [_ADJUST] = LAYOUT(
     KC_MUTE, KC_F7,   KC_F8,   KC_F9,   KC_F10,                   _______, Cc_UP,   _______, _______, _______,
-    KC_VOLU, KC_F4,   KC_F5,   KC_F6,   KC_F11,                   M_LEFT,  M_DOWN,  M_UP,    M_RIGHT, KC_PGUP,
+    KC_VOLU, KC_F4,   KC_F5,   KC_F6,   KC_F11,                   M_LEFT,  M_DOWN,  M_UP,    M_RGHT,  KC_PGUP,
     KC_VOLD, KC_F1,   KC_F2,   KC_F3,   KC_F12, KC_BRIU, KC_BRID, _______, _______, _______, _______, KC_PGDN,
-    AEH    , OEH  ,   UEH  ,   _______, SZ    , _______, _______, _______, _______, _______, _______, _______)
+    ä      , ö    ,   ü    ,   _______, ß     , _______, _______, _______, _______, _______, _______, _______)
 };
 
 /// Macros
@@ -168,8 +160,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   _C(RBND, _IPS(">>="))        ; _C(APP  , _IPS("<*>"))           ; _C(RAPP, _IPS("*>"));
   _C(LAPP, _IPS("<*"))         ; _C(FMAP , _IPS("<$>"))           ; _C(PAMF, _IPS("<&>"));
   _C(AALT, _IPS("<|>"))        ; _C(IMPLS, _IPS("=>"))            ; _C(DCOL, _IPS("::"));
-  _C(AEH , _CMPS("\"a", "\"A")); _C(OEH  , _CMPS("\"o", "\"O"))   ; _C(UEH , _CMPS("\"u", "\"U"));
-  _C(SZ  , _CMPS("ss" , "SS" )); _C(Cc_UP, _IPS(SS_LCTL("c") "^"));
+  _C(ä   , _CMPS("\"a", "\"A")); _C(ö    , _CMPS("\"o", "\"O"))   ; _C(ü   , _CMPS("\"u", "\"U"));
+  _C(ß   , _CMPS("ss" , "SS" )); _C(Cc_UP, _IPS(SS_LCTL("c") "^"));
   }
   return true;
 };
@@ -246,10 +238,10 @@ DEFTAP(l1_clyb, 16,KC_LCBR, l,_LOWER , 16,KC_RCBR)
 DEFTAP(duck,    d1,{}     , d2,{}    , d3,{})
 
 tap_dance_action_t tap_dance_actions[] = {
-  [ALT_BR] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, lalt_br_finished, lalt_br_reset),
-  [CTL_PR] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, lctl_pr_finished, lctl_pr_reset),
-  [SFT_CI] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, lsft_ci_finished, lsft_ci_reset),
-  [SFT_EX] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, lsft_ex_finished, lsft_ex_reset),
-  [L1_CLY] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, l1_clyb_finished, l1_clyb_reset),
+  [TD_ABR] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, lalt_br_finished, lalt_br_reset),
+  [TD_CPR] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, lctl_pr_finished, lctl_pr_reset),
+  [TD_SCI] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, lsft_ci_finished, lsft_ci_reset),
+  [TD_SEX] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, lsft_ex_finished, lsft_ex_reset),
+  [TD_L1C] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, l1_clyb_finished, l1_clyb_reset),
   [TD_DCK] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, duck_finished   , duck_reset   ),
 };
