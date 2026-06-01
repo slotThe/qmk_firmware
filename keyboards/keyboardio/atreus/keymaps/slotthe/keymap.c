@@ -81,33 +81,33 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
      .-----.-----.-----.-----.-----.           .-----.-----.-----.-----.-----.
      |  A  |  R  |  S  |  T  |  G  |           |  M  |  N  |  E  |  I  |  O  |
      .-----.-----.-----.-----.-----.-----.-----.-----.-----.-----.-----.-----.
-     | S+Z |  X  |  C  |  D  |  V  | DCK | REP |  K  |  H  |  ,  |  .  | S+/ |
+     | S+Z |  X  |  C  |  D  |  V  | DCK |     |  K  |  H  |  ,  |  .  | S+/ |
      .-----.-----.-----.-----.-----.-----.-----.-----.-----.-----.-----.-----.
-     | ESC | TAB | SPR | L{} | SPC | A[] | BSC | C() | L2  |  -  |  '  | RET |
+     | ESC |     | SPR | L{} | SPC | A[] | BSC | C() | L2  |     |     | RET |
      .-----.-----.-----.-----.-----.-----.-----.-----.-----.-----.-----.-----.
   */
   [_COLEMAK_DH] = LAYOUT(
     KC_Q,    KC_W,    KC_F,    KC_P,    KC_B,                      KC_J,    KC_L,    KC_U,    KC_Y,    M4_SC,
     KC_A,    KC_R,    KC_S,    KC_T,    KC_G,                      KC_M,    KC_N,    KC_E,    KC_I,    KC_O,
-    S_Z,     KC_X,    KC_C,    KC_D,    KC_V,    DUCK,    QK_REP,  KC_K,    KC_H,    KC_COMM, RAISE_D, S_SLSH,
-    KC_ESC,  KC_TAB,  KC_LGUI, L1_CLY,  KC_SPC,  M_BRC,  KC_BSPC,  C_PRN,   RAISE,   KC_MINS, KC_QUOT, KC_ENT),
+    S_Z,     KC_X,    KC_C,    KC_D,    KC_V,    DUCK,   _______,  KC_K,    KC_H,    KC_COMM, RAISE_D, S_SLSH,
+    KC_ESC,  _______, KC_LGUI, L1_CLY,  KC_SPC,  M_BRC,  KC_BSPC,  C_PRN,   RAISE,   _______, _______, KC_ENT),
 
   /* Layer 1 (LOWER)
      .-----.-----.-----.-----.-----.           .-----.-----.-----.-----.-------.
      |  &  |     |     |     |     |           | <-  |  +  |     |  -  | M+SPC |
      .-----.-----.-----.-----.-----.           .-----.-----.-----.-----.-------.
-     | ::  |  ^  |     |     |  @  |           |  ←  |  ↓  |  ↑  |  →  |   \   |
+     | ::  |  ^  | MEN |     |  @  |           |  ←  |  ↓  |  ↑  |  →  |   \   |
      .-----.-----.-----.-----.-----.-----.-----.-----.-----.-----.-----.-------.
-     | !+S |     |     |     |     |     | MEN |  -> |  $  |  #  |  %  |  ^+S  |
+     | !+S |     |     |     |     |     |     |  -> |  $  |  #  |  %  |  ^+S  |
      .-----.-----.-----.-----.-----.-----.-----.-----.-----.-----.-----.-------.
      |     |     |     |     |     |     |     | C-B | L3  | ALT |     |  S-I  |
      .-----.-----.-----.-----.-----.-----.-----.-----.-----.-----.-----.-------.
   */
   [_LOWER] = LAYOUT(
-    KC_AMPR, _______, _______, _______, _______,                  LARR,    KC_PLUS, _______, KC_MINS, M_SPC,
-    DCOL,    KC_CIRC, _______, _______, KC_AT,                    KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, KC_BSLS,
-    S_EXCL,  _______, _______, _______, _______, _______, KC_APP, RARR,    KC_DLR,  KC_HASH, KC_PERC, S_CIRC,
-    _______, _______, _______, _______, _______, _______, C_BSPC, _______, ADJUST,  KC_LALT, _______, S_INS),
+    KC_AMPR, _______, _______, _______, _______,                   LARR,    KC_PLUS, _______, KC_MINS, M_SPC,
+    DCOL,    KC_CIRC, KC_APP,  _______, KC_AT,                     KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, KC_BSLS,
+    S_EXCL,  _______, _______, _______, _______, _______, _______, RARR,    KC_DLR,  KC_HASH, KC_PERC, S_CIRC,
+    _______, _______, _______, _______, _______, _______, C_BSPC,  _______, ADJUST,  KC_LALT, _______, S_INS),
 
   /* Layer 2 (RAISE)
      .-----.-----.-----.-----.-----.           .-----.-----.-----.-----.-----.
